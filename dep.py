@@ -2,7 +2,6 @@
 
 import sys
 import urllib2
-urllib2.urlopen("http://example.com/foo/bar").read()
 
 # url
 # @TODO (mark): github urls
