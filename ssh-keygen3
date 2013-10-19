@@ -1,0 +1,46 @@
+#!/bin/bash
+# This script will generate a secure ssh-key for ya
+##
+
+if [[ $1 == '' ]]; then
+    echo "Save key:"
+    read path
+elif [[ $1 == '-h' ]]; then
+    echo "Usage: ssh-keygen3 [file]"
+    exit 1
+else
+    path=$1
+fi
+
+echo "Password:"
+read -s password
+
+# First, we generate the key using ssh-keygen.
+# Next we run it through openssl to encrypt it. It still works, just better.
+# For reasons why you sohuld encrypt your key:
+# http://martin.kleppmann.com/2013/05/24/improving-security-of-ssh-private-keys.html
+##
+
+ssh-keygen -t rsa -b 2048 -N "$password" -f $path \
+    -C "$(whoami)@$(hostname -s)-$(date +'%s')" && \
+mv $path $path.unencrypted && \
+# Going to have to enter passwords manually until I can figure out the error
+# with OpenSSL
+#openssl pkcs8 -topk8 -v2 des3 -in $path.unencrypted -out $path \
+#    -passout pass:$pass \
+#    -passin pass:$pass && \
+openssl pkcs8 -topk8 -v2 des3 -in $path.unencrypted -out $path && \
+chmod 600 $path && ssh-add $path && cp "$path" "$path.pub" $HOME/.ssh/ && echo "Key added." && \
+rm $path.unencrypted && \
+echo "Key created."
+
+
+if [[ $DROPBOX ]]; then
+    pth=$DROPBOX/keys/$(basename $path)
+    mkdir -p $pth && cp "$path" "$path.pub" $pth/ && echo "Key backed up in your Dropbox."
+fi
+
+echo "Pubkey:"
+cat "$path.pub" | pbcopy
+rm -f "$path" "$path.pub"
+echo "Done."
