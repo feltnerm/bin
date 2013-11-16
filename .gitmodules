@@ -1,0 +1,9 @@
+[submodule "SpotifyControl"]
+	path = SpotifyControl
+	url = git://github.com/dronir/SpotifyControl.git
+[submodule "zshdb"]
+	path = zshdb
+	url = https://github.com/rocky/zshdb
+[submodule "git-friendly"]
+	path = git-friendly
+	url = git://github.com/jamiew/git-friendly.git
