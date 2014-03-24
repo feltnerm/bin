@@ -20,8 +20,8 @@ DEPENDENCIES = (
 )
 
 def chmod(file, mode):
-    st = os.stat(name)
-    os.chmod(name, st.st_mode | mode)
+    st = os.stat(file)
+    os.chmod(file, st.st_mode | mode)
 
 chmod_x = lambda file: chmod(file, stat.S_IEXEC)
 
