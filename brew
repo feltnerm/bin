@@ -31,3 +31,5 @@ brew install tree
 
 # Remove outdated versions from the cellar
 brew cleanup
+
+# @TODO: http://www.dctrwatson.com/2013/07/how-to-update-openssh-on-mac-os-x/
