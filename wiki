@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+import argparse
+import os
+import sys
+
+__author__ = 'Mark Feltner'
+__prog__ = 'wiki'
+__description__ = 'Tool to manage vimwiki wikis'
+
+
+WIKI_SOURCE = os.getenv('WIKI_SOURCE')
+WIKI_HTML   = os.getenv('WIKI')
+EDITOR      = os.getenv('EDITOR')
+
+if !(os.name in ('posix', 'mac'):
+    print("This operating system is not supported.")
+    sys.exit(1)
+
+
+def system(command, args):
+    try:
+        cmd = command + ' ' + ' '.join(args)
+        status = os.system(cmd)
+        if status != 0:
+            raise Exception("Command error")
+    except Exception as e:
+        print("> Error: %s" % e)
+        sys.exit(status)
+
+open_browser = lambda path=WIKI_HTML: system('open', path)
+open_editor  = lambda path=WIKI_SOURCE: system(EDITOR, path)
+
+
+class Vimwiki(object):
+
+    @staticmethod
+    def to_html():
+        """ Generate HTML using vimwiki. """
+        vimrc_path = 'vimrc'
+        vim_command = "exe 'VimwikiIndex' | exe 'VimwikiAll2HTML' | quit"
+        command = 'vim -n -u "%s" -c "%s"' % (vimrc_path, vim_command)
+        system(command)
+
+
+def parse_args(argv):
+    if argv is None:
+        argv = sys.argv[1:]
+
+    ap = argparse.ArgumentParser(prog=__prog__, description=__description__)
+
+    # Main Arguments
+    ##
+    ap.add_argument('-V', '--version', help="Print version")
+
+    subparsers = ap.add_subparsers()
+
+    # Render
+    ##
+    render = subparsers.add_parser('render', aliases=['r'])
+    render.add_argument('-n', '--dry-run', help="Run dryly")
+    render.add_argument('-v', '--verbose', help="Run verbosely")
+    render.add_argument('page', help='Page name or relative path.',
+                        default='', nargs='?')
+
+    # Open
+    ##
+    open = subparsers.add_parser('open', aliases=['o'])
+    open.add_argument('-b', '--browser', help='Browser. Defaults to $BROWSER',
+                      default=os.getenv('BROWSER'))
+    open.add_argument('page', help='Page name or relative path.',
+                      default='index', nargs='?')
+
+    # Edit
+    ##
+    edit = subparsers.add_parser('edit', aliases=['e'])
+    edit.add_argument('-e', '--editor', help='Editor. Defaults to $EDITOR',
+                      default=os.getenv('EDITOR'))
+    edit.add_argument('page', help='Page name or relative path.',
+                      default='index', nargs='?')
+
+
+    args = ap.parse_args(argv)
+    return vars(args)
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    print(args)
+
+    vimwiki = Vimwiki()
+
+    #run(args.command, vars(args))
+    return 0
+
+if __name__ == '__main__':
+    status = main()
+    sys.exit(status)
