@@ -17,6 +17,7 @@ DEPENDENCIES = (
   , ('prettyping', 'https://bitbucket.org/denilsonsa/small_scripts/raw/0c59d14ca5f1aac01447e28d81f5d5c433976348/prettyping.sh')
   , ('bash_colors', 'https://raw.github.com/maxtsepkov/bash_colors/master/bash_colors.sh')
   , ('z', 'https://raw.github.com/rupa/z/master/z.sh')
+  , ('k', 'https://raw.githubusercontent.com/supercrabtree/k/master/k.sh')
 )
 
 def chmod(file, mode):
