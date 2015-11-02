@@ -7,3 +7,6 @@
 [submodule "git-friendly"]
 	path = git-friendly
 	url = git://github.com/jamiew/git-friendly.git
+[submodule "racer-src"]
+	path = racer-src
+	url = https://github.com/phildawes/racer.git
